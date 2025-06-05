@@ -1,23 +1,42 @@
 # import json module
 import json
 
+def get_stored_username():
+    """Get stored username if available"""
+    filename = 'username.json'
+    try:
+        with open(filename) as f:
+            username = json.load(f)
+    except FileNotFoundError:
+        return None
+    else:
+        return username
 
-# Load the username if it has been store previously.
-# Otherwise prompt the username and store it.
-
-# store the user name in a variable
-filename = 'username.json'
-
-try:
-    with open(filename) as f:
-        username = json.load(f)
-
-except FileNotFoundError:
-    # store the data in a json call username.
-    username = input("What's your name: ")
+def get_new_username():
+    """Prompt for a new user"""
+    username = input("What is your name? ")
+    filename = 'username.json'
     with open(filename, 'w') as f:
         json.dump(username, f)
-        print(f"We'll remember you when you come back, {username}!")
+    return username
 
-else:
-    print(f"Welcome back {username}!")
+def greet_user():
+    """Greet the user by name."""
+    username = get_stored_username()
+    
+    if username:
+        verify_user = input(f"Is this your name {username}, type(yes/no) ")
+        if verify_user.lower() == 'yes':
+            print(f"Welcome back {username}!")
+        elif verify_user.lower() == 'no' :
+            username = get_new_username()
+            print(f"We'll remember you when you are back, {username}!")
+        else:
+            print("Please type 'yes' or 'no'")
+
+    else:
+        username = get_new_username()
+        print(f"I'll remember you when you come back {username}!")
+
+
+greet_user()
